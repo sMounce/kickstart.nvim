@@ -102,7 +102,7 @@ vim.g.have_nerd_font = false
 vim.o.number = true
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
--- vim.o.relativenumber = true
+vim.o.relativenumber = true
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.o.mouse = 'a'
@@ -437,6 +437,59 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
 
+      -- maybe move the below to a different kind of file?
+      vim.cmd 'set wildignore=*/node_modules/*,*/cdk.out/*,*/dist/*,*/build/*'
+
+      -- stuff for opening terminal you know what I mean?
+      local set = vim.opt_local
+      vim.api.nvim_create_autocmd('TermOpen', {
+        group = vim.api.nvim_create_augroup('custom-term-open', {}),
+        callback = function()
+          set.number = false
+          set.relativenumber = false
+          set.scrolloff = 0
+        end,
+      })
+      vim.keymap.set('t', '<esc><esc>', '<c-\\><c-n>')
+      vim.keymap.set('n', '<leader>to', function()
+        vim.cmd.new()
+        vim.cmd.wincmd 'J'
+        vim.api.nvim_win_set_height(0, 12)
+        vim.wo.winfixheight = true
+        vim.cmd.term()
+      end)
+      -- no longer terminal shit
+
+      -- maybe move the below to a different kind of file?
+      vim.cmd 'set wildignore=*/node_modules/*,*/cdk.out/*,*/dist/*,*/build/*'
+
+      vim.opt.tabstop = 2
+      vim.opt.softtabstop = 2
+      vim.opt.shiftwidth = 2
+      vim.opt.expandtab = true
+      vim.opt.number = true
+      vim.opt.clipboard = 'unnamedplus'
+      vim.opt.breakindent = true
+      vim.opt.undofile = true
+      vim.opt.ignorecase = true
+      vim.opt.smartcase = true
+      vim.opt.signcolumn = 'yes' -- move this to gitsigns?
+      vim.opt.updatetime = 250
+      vim.opt.timeoutlen = 300 -- faster which key ...will I download which key?
+      vim.opt.splitbelow = true
+      vim.opt.splitright = true
+
+      vim.opt.inccommand = 'split'
+
+      vim.opt.rnu = true
+      vim.opt.nu = true
+      vim.opt.cursorline = true
+      vim.opt.scrolloff = 10
+      -- turn on once I have status line
+      vim.opt.showmode = false
+
+      -- vim: ts=2 sts=2 sw=2 et
+
       -- Slightly advanced example of overriding default behavior and theme
       vim.keymap.set('n', '<leader>/', function()
         -- You can pass additional configuration to Telescope to change the theme, layout, etc.
@@ -553,7 +606,7 @@ require('lazy').setup({
           -- Jump to the definition of the word under your cursor.
           --  This is where a variable was first declared, or where a function is defined, etc.
           --  To jump back, press <C-t>.
-          map('grd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
+          map('gd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
 
           -- WARN: This is not Goto Definition, this is Goto Declaration.
           --  For example, in C this would take you to the header.
@@ -673,7 +726,7 @@ require('lazy').setup({
       local servers = {
         -- clangd = {},
         -- gopls = {},
-        -- pyright = {},
+        pyright = {},
         -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
@@ -681,7 +734,7 @@ require('lazy').setup({
         --    https://github.com/pmizio/typescript-tools.nvim
         --
         -- But for many setups, the LSP (`ts_ls`) will work just fine
-        -- ts_ls = {},
+        tsserver = {},
         --
 
         lua_ls = {
@@ -976,15 +1029,15 @@ require('lazy').setup({
   -- require 'kickstart.plugins.debug',
   -- require 'kickstart.plugins.indent_line',
   -- require 'kickstart.plugins.lint',
-  -- require 'kickstart.plugins.autopairs',
+  require 'kickstart.plugins.autopairs',
   -- require 'kickstart.plugins.neo-tree',
-  -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
+  require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
   --
   --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
-  -- { import = 'custom.plugins' },
+  { import = 'custom.plugins' },
   --
   -- For additional information with loading, sourcing and examples see `:help lazy.nvim-🔌-plugin-spec`
   -- Or use telescope!
